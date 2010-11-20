@@ -14,65 +14,88 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 package naedyrscala.tools
+import naedyrscala.tools.AsyncThread._
 
-import java.util.concurrent.Executors
-import java.util.concurrent.Callable
-
-object Background {
-  val exec = Executors.newCachedThreadPool()
-  def apply[T](func: => T): Result[T] = {
-    Result(exec.submit(new Callable[T]() {
-      def call(): T = {
-        //println("func called")
-        func
-      }
-    }))
-  }
-  case class Result[T](private val future: java.util.concurrent.Future[T]) {
-    def apply() = value
-    lazy val value = future.get()
-  }
-}
-
-object FutureTest extends Application {
+class AsyncThreadTest extends Application {
   proof()
+  async_await()
+  await_async()
   threeSums()
   totalSums()
   bank()
 
   def proof() = {
     println("define result")
-    val result = Background {
+    val result = async {
       println("executing func in thread " + Thread.currentThread.getId)
       5
     }
+    println("available " + result.available)
     Thread.sleep(2000)
     println("result " + result + " in thread " + Thread.currentThread.getId)
-    println(result())
-    println(result.value)
+    println(result.await)
+    println(result.await())
+    println(await(result))
+    println("available " + result.available)
   }
 
   def threeSums() = {
-    val sum = Background {
+    val sum = async {
       (1 to 100000000).reduceLeft(_ + _)
     }
-    val sum2 = Background {
+    val sum2 = async {
       (1 to 100000000).reduceLeft(_ + _)
     }
-    val sum3 = Background {
+    val sum3 = async {
       (1 to 100000000).reduceLeft(_ + _)
     }
     println("do something else")
-    println(sum.value)
-    println(sum2())
-    println(sum3.value)
+    println(sum.await)
+    println(await { sum })
+    println(await(sum3))
+  }
+
+  def async_await() = {
+    val sum = async {
+      (1 to 100000000).reduceLeft(_ + _)
+    }
+    // async await will wait for the result in another thread, ie callback. 
+    // same as putting it all in the async block, except broken up in to 2 executions (matters if it's all in the same thread)
+    val result = async {
+      val x = await(sum)
+      println("callback " + x)
+      x
+    }
+
+    // equivalent to above, except runs together 
+    val result2 = async {
+      val y = (1 to 100000000).reduceLeft(_ + _)
+      println("callback " + y)
+      y
+    }
+
+    println("do something else")
+    println(await(sum))
+    println("do another thing else")
+    println(result.await)
+    println(result2)
+  }
+
+  def await_async() = {
+    // await async will run something synchronously in another thread 
+    val sum = await(async {
+      (1 to 100000000).reduceLeft(_ + _)
+    })
+
+    println("do something else")
+    println(sum)
   }
 
   def totalSums() = {
     val total = AtomOptimistic(0)
     val max = 1000
     println("initial total " + total.value)
-    val sum = Background {
+    val sum = async {
       (1 to max).foldLeft(0) { (x, y) =>
         val value = x + y
         total.value += y
@@ -80,7 +103,7 @@ object FutureTest extends Application {
       }
     }
     println("mid total " + total.value)
-    val sum2 = Background {
+    val sum2 = async {
       (1 to max).foldLeft(0) { (x, y) =>
         val value = x + y
         total.value += y
@@ -88,18 +111,18 @@ object FutureTest extends Application {
       }
     }
     println("mid total " + total.value)
-    val sum3 = Background {
+    val sum3 = async {
       (1 to max).foldLeft(0) { (x, y) =>
         val value = x + y
         total.value += y
         value
       }
     }
-    println(sum.value)
-    println("mid total " + total.value)
-    println(sum2.value)
-    println(sum3())
-    println("total " + total.value + " should be " + (sum.value + sum2.value + sum3.value))
+    println(sum.await)
+    println("mid total " + total.get)
+    println(sum2.await)
+    println(await { sum3 })
+    println("total " + total.value + " should be " + (sum.await + sum2.await + sum3.await))
   }
 
   def bank() = {
@@ -115,7 +138,7 @@ object FutureTest extends Application {
       balance + amount
     }
     def applyTransaction(account: Atomic[Int], transaction: Int => Int) = {
-      Background {
+      async {
         account(acc => transaction(acc))
         account()
       }
@@ -125,7 +148,8 @@ object FutureTest extends Application {
     val transactions = List(deposit(100, _: Int), withdraw(100, _: Int), withdraw(10, _: Int), withdraw(10, _: Int), withdraw(10, _: Int))
     val results = transactions.map { transact(_) }
     println("balance " + balance.value)
-    results.foreach(x => println(x.value))
+    results.foreach(x => println(x.await))
     println("balance " + balance.value + " should equal " + (100 + 100 - 10 - 10 - 10 - 10))
   }
+
 }

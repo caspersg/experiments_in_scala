@@ -15,23 +15,14 @@ limitations under the License.
 */
 package naedyrscala.tools
 
-case class AtomPessimistic[T](private var ref: T) extends Atomic[T] with AtomicValue[T] with AtomicAssign[T] with AtomicBean[T] {
-  def apply(): T = synchronized { ref }
+import java.util.concurrent.Executors
+import java.util.concurrent.Callable
 
-  def apply(f: => T): T = {
-    var value = apply()
-    retriable {
-      synchronized {
-        ref = f
-        value = ref
-      }
-    }
-    value
-  }
+trait Result[T] {
+  def await(): T
+  def available(): Boolean
 }
 
-object AtomPessimisticTest extends Application {
-  val atom = AtomPessimistic(0)
-  AtomicTest.run(atom)
-  AtomicTest.runValue(atom)
+trait Async[T] {
+  def invoke[T](func: => T): Result[T]
 }

@@ -15,35 +15,38 @@ limitations under the License.
 */
 package naedyrscala.tools
 
+import naedyrscala.tools.AsyncThread._
+
 object ParallelMap {
   // run foreach and map in parallel
   class ParallelIterable[T](seq: Iterable[T]) {
-    def pforeach(f: (T) => Unit): Unit = {
-      val futures = seq.map { x: T =>
-        {
-          Background { f(x) }
-        }
-      }
-      futures.foreach { _.value }
+    def mapAsync[R](f: T => R) = {
+      seq.map { x: T => async { f(x) } }
     }
-    def pmap[R](f: (T) => R): Iterable[R] = {
-      val futures = seq.map { x: T =>
-        {
-          Background { f(x) }
-        }
-      }
-      futures.map { x => x.value }
+    def pforeach(f: T => Unit): Unit = {
+      mapAsync(f).foreach { _.await }
+    }
+    def pmap[R](f: T => R): Iterable[R] = {
+      mapAsync(f).map { _.await }
     }
     // memoize map, all elements start at the same Time, so never takes advantage of memoization
     // if max threads was restricted, then some sequential elements would use memoized values
-    def mempmap[R](f: (T) => R): Iterable[R] = {
+    def mempmap[R](f: T => R): Iterable[R] = {
       val mf = Mem(f(_: T))
-      val futures = seq.map { x: T =>
-        {
-          Background { mf(x) }
+      mapAsync(mf).map { _.await }
+    }
+
+    def pfind(f: T => Boolean): Option[T] = {
+      def f2(x: T) = {
+        val result = f(x)
+        if (result) {
+          Some(x)
+        } else {
+          None
         }
       }
-      futures.map { x => x.value }
+      val found = for (x <- mapAsync(f2) if x.await != None ) yield x.await
+      found.first
     }
   }
 
