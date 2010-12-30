@@ -49,6 +49,7 @@ object AtomOptimisticTest extends Application {
   // assign
   atom(_ + 2)
   atom { _ + 2 }
+  atom { old => old + 2 }
 
   atom := 2
   atom.:=(2)
@@ -69,6 +70,7 @@ object AtomOptimisticTest extends Application {
   atom()
 
   atom.value
+  atom value
 
   atom.get()
   atom.get
