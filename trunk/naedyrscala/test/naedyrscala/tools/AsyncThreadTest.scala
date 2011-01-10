@@ -16,13 +16,15 @@ limitations under the License.
 package naedyrscala.tools
 import naedyrscala.tools.AsyncThread._
 
-class AsyncThreadTest extends Application {
-  proof()
-  async_await()
-  await_async()
-  threeSums()
-  totalSums()
-  bank()
+class AsyncThreadTest {
+  def main(args: Array[String]): Unit = {
+    proof()
+    async_await()
+    await_async()
+    threeSums()
+    totalSums()
+    bank()
+  }
 
   def proof() = {
     println("define result")
