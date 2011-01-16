@@ -75,6 +75,7 @@ object Test2 extends Application {
       }
       val value = x()
       println(value)
+    case x => println("error, recieved " + x)
   }
   echoActorFuture ! Exit
   println("done\n")

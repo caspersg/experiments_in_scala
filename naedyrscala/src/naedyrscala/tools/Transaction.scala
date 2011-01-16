@@ -41,7 +41,7 @@ trait Transaction {
  * if multiple threads attempt to enter the block (ie run the function) all except one will be forced to retry
  *
  */
-case class TransactionOptimistic extends Transaction {
+case class TransactionOptimistic() extends Transaction {
   protected val count = AtomOptimistic(0)
 }
 
@@ -49,7 +49,7 @@ case class TransactionOptimistic extends Transaction {
  * All threads will be blocked except one
  *
  */
-case class TransactionPessimistic extends Transaction {
+case class TransactionPessimistic() extends Transaction {
   protected val count = AtomPessimistic(0)
 }
 
