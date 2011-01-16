@@ -20,7 +20,7 @@ import scala.swing._
 import swing._
 import event._
 
-object Converter extends SimpleGUIApplication {
+object Converter extends SimpleSwingApplication {
 
   def top = new MainFrame {
     title = "Converter"

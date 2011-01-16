@@ -45,8 +45,8 @@ object ParallelMap {
           None
         }
       }
-      val found = for (x <- mapAsync(f2) if x.await != None ) yield x.await
-      found.first
+      val found = for (x <- mapAsync(f2) if x.await != None) yield x.await
+      found.head
     }
   }
 
@@ -81,19 +81,19 @@ object ParallelMap {
     val waits = List(1, 10, 100)
     val counts = List(1, 10, 100)
 
-    val resultsD = for (
-      wait <- waits;
+    val resultsD = for {
+      wait <- waits
       count <- counts
-    ) yield {
+    } yield {
       test(wait, (1 to count))
     }
     println("different data 1,10,100 sequential,memoized,parallel,memoized_parallel " + resultsD)
 
-    val someInts = List.flatten(List.make(10, List(1, 2, 3, 4)))
-    val resultsR = for (
-      wait <- waits;
+    val someInts = List.fill(10)(List(1, 2, 3, 4)).flatten
+    val resultsR = for {
+      wait <- waits
       count <- counts
-    ) yield {
+    } yield {
       test(wait, someInts)
     }
     println("with repeats data 1,10,100 sequential,memoized,parallel,memoized_parallel " + resultsR)

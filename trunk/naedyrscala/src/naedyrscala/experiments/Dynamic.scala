@@ -15,14 +15,14 @@ limitations under the License.
 */
 package naedyrscala.experiments
 
-case class Runner {
+case class Runner() {
   def run(times: Int): Int = {
     (1 to times).foreach(x => println("run " + x))
     times
   }
 }
 
-case class Walker {
+case class Walker() {
   def walk(times: Int): String = (1 to times).map("run" + _).mkString
 }
 
