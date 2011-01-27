@@ -40,4 +40,24 @@ object RunTest extends Application {
 
   val out: String = Runner().asInstanceOf[Walk].walk(3)
   val timesW: Int = Walker().asInstanceOf[Run].run(5)
+
+  val result: Int = Runner().asInstanceOf[{ def run(x: Int): Int }].run(1)
+
+  def run(o: { def run(x: Int): Int }, times: Int) = o.run(times)
+  val result2 = run(Runner(), 4)
+
+  val result3: Int = (5: Any).asInstanceOf[{ def run(x: Int): Int }].run(1)
+
+  val result4: Int = 5.asInstanceOf[{ def run(x: Int): Int }].run(1)
+
+  val result5 = Runner() match {
+    case x: { def run(x: Int): Int } => x.run(2)
+    case _ => -1
+  }
+
+  // without the :Any it fails compilation
+  val result6 = (100: Any) match {
+    case x: { def run(x: Int): Int } => x.run(2)
+    case _ => -1
+  }
 }

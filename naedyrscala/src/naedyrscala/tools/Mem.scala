@@ -55,31 +55,3 @@ object Mem {
   def apply[A, B, R](func: (A, B) => R) = mem2(func)
 }
 
-object MemTest extends Application {
-  def one(): Int = { println("one"); 1 }
-  def mult(x: Int, y: Int): Int = { println("mult"); x * y }
-  def double(x: Int): Int = { println("double"); mult(x, 2) }
-  def hello(x: String): String = { println("hello"); "hello " + x }
-
-  val memOne = Mem(one)
-  memOne()
-  memOne()
-  memOne()
-
-  val memDouble = Mem(double _)
-  memDouble(2)
-  memDouble(2)
-  memDouble(4)
-  memDouble(4)
-  memDouble(4)
-
-  val memMult = Mem(mult _)
-  memMult(2, 3)
-  memMult(2, 3)
-  memMult(4, 4)
-  memMult(4, 4)
-
-  val memHello = Mem(hello _)
-  memHello("me")
-  memHello("me")
-}
