@@ -18,21 +18,38 @@ package naedyrscala.experiments
 // from http://downgra.de/2010/08/05/scala_gotcha_blocks_and_functions/
 object EdgeCase extends Application {
 
+  var x = 1
+
   def f1(f: Int => Int) {
     println(">> f1")
-    println("  got " + f(23))
-    println("  got " + f(42))
+    println("  got " + f(1))
+    x += 1
+    println("  got " + f(2))
     println("<< f1")
   }
-  
-   def f2(f: => Int) {
+
+  // ignores the println in the function definition,
+  // looks for a function within the block, not just treating the block as the function
+  // _very_ edge case. how often will you have statement then _
+  f1 {
+    println("  >> add 4")
+    _ + 4
+  }
+
+  // works
+  f1 { _ + x }
+
+  // the proper way to do f1
+  f1 { x => println("  >> add 4"); x + 4 }
+
+  def f2(f: => Int) {
     println(">> f2")
     println("  got " + f)
     println("  got " + f)
     println("<< f2")
   }
 
-  f1 { println("  >> add 23"); _ + 23 }
-  f2 { println("  >> add 23"); 23 }
+  f2 { println("  >> add 4"); 4 }
+
 }
 
