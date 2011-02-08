@@ -1,3 +1,5 @@
+
+
 // from https://gist.github.com/248807#file_string_interpolation.scalai
 
 package naedyrscala.tools

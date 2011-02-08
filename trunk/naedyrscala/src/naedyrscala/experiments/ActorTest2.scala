@@ -19,7 +19,7 @@ import scala.actors.Future
 import scala.actors.Actor
 import scala.actors.Actor._
 
-object Test2 extends Application {
+object ActerTest2 extends Application {
 
   case class Exit()
 

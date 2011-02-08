@@ -32,7 +32,7 @@ case class AtomOptimistic[T](private val initialValue: T) extends Atomic[T] with
     retriable {
       do {
         value = f
-        println("collision")
+        //println("collision")
         Thread.sleep(1);
       } while (!ref.compareAndSet(ref.get(), value))
     }
