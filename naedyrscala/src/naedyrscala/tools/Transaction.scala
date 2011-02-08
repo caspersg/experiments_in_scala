@@ -15,7 +15,7 @@ limitations under the License.
 */
 package naedyrscala.tools
 
-import ParallelMap._
+import naedyrscala.tools.Parallel._
 import scala.actors.Actor
 import scala.actors.Actor._
 

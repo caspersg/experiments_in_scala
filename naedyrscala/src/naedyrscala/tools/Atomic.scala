@@ -15,23 +15,7 @@ limitations under the License.
 */
 package naedyrscala.tools
 
-trait Atomic[T] {
-  /**
-   * @return the current value
-   */
-  def apply(): T
-  /**
-   * set a new value, override current value
-   * @param f function which calculates the new value
-   * @return the value that was set (not the pre or post value, the one set from this invocation)
-   */
-  def apply(f: => T): T
-  /**
-   * set a new value, that's derived from the current value
-   * @param f function which calculates the new value
-   * @return the value that was set (not the pre or post value, the one set from this invocation)
-   */
-  def apply(f: T => T): T = apply(f(apply()))
+trait Atomic[T] extends Ref[T]{
 
   /**
    * retry the new value function (ie retry the transaction)
@@ -87,7 +71,7 @@ object AtomicTest {
     myAtom { _ + 1 }
     assert(6 == myAtom())
 
-    // make a second copy of the same shared data
+    // make a second reference to the same shared data
     val myAtomCopy = myAtom
 
     // double the current value
