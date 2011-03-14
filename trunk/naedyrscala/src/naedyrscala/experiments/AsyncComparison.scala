@@ -16,12 +16,11 @@ limitations under the License.
 package naedyrscala.experiments
 
 import naedyrscala.tools.Result
-import naedyrscala.tools.AsyncThread
-import naedyrscala.tools.AsyncThread._
+import naedyrscala.tools.Async._
 
 // C# from http://blogs.msdn.com/b/ericlippert/archive/2010/10/28/asynchrony-in-c-5-part-one.aspx
 
-object Async {
+object AsyncComparison {
   case class Url(num: Int)
   def fetch(url: Url): Int = {
     println("fetched " + url);

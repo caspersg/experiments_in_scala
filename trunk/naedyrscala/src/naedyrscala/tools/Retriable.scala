@@ -14,24 +14,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 package naedyrscala.tools
+import scala.annotation.tailrec
 
-case class AtomPessimistic[T](private var ref: T) extends Atomic[T] with AtomicValue[T] with AtomicAssign[T] with AtomicBean[T] {
-  def apply(): T = synchronized { ref }
+object Retriable {
+  /**
+   * retry the new value function (ie retry the transaction)
+   */
+  def retry(): Unit = throw new RetryException
 
-  def apply(f: => T): T = {
-    var value = apply()
-    Retriable.retriable {
-      synchronized {
-        ref = f
-        value = ref
-      }
+  /**
+   * retry the function if a RetryException is called
+   * @param f
+   */
+  def retriable[T](f: => T): T = {
+    try {
+      f
+    } catch {
+      case _: RetryException =>
+        retriable(f)
     }
-    value
   }
-}
-
-object AtomPessimisticTest extends Application {
-  val atom = AtomPessimistic(0)
-  AtomicTest.run(atom)
-  AtomicTest.runValue(atom)
+  class RetryException extends Exception
 }

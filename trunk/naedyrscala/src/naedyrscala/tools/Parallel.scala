@@ -15,7 +15,7 @@ limitations under the License.
 */
 package naedyrscala.tools
 
-import naedyrscala.tools.AsyncThread._
+import naedyrscala.tools.Async._
 
 /**
  * I know parallel collections are coming in 2.9; I'm just having fun

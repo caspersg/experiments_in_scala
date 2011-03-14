@@ -15,27 +15,12 @@ limitations under the License.
 */
 package naedyrscala.tools
 
-trait Atomic[T] extends Ref[T]{
+trait Atomic[T] extends Ref[T] {
 
   /**
    * retry the new value function (ie retry the transaction)
    */
-  def retry(): Unit = throw new RetryException
-
-  /** retry the function if a RetryException is called
-   * @param f
-   */
-  protected def retriable(f: => Unit): Unit = {
-    try {
-      f
-    } catch {
-      case _: RetryException => {
-        println("retry")
-        retriable(f)
-      }
-    }
-  }
-  class RetryException extends Exception
+  def retry(): Unit = Retriable.retry()
 }
 
 /**

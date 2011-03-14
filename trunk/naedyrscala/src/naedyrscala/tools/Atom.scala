@@ -15,30 +15,22 @@ limitations under the License.
 */
 package naedyrscala.tools
 
+import org.junit.Test
 import java.util.concurrent.atomic.AtomicReference
 
-case class Atom[T](private val initialValue: T) {
+case class Atom[T](private val value: T) {
   private val ref = new AtomicReference[T]()
-  ref.set(initialValue)
-  def value = ref.get()
-  def value_=(transaction: => T): Unit = {
-    while (!ref.compareAndSet(ref.get(), transaction)) {
-      // println("retry transaction")
-    }
-  }
-  def value_=(transaction: T => T): Unit = {
-    while (!ref.compareAndSet(ref.get(), transaction(ref.get()))) {
-      // println("retry transaction")
-    }
-  }
-}
+  ref.set(value)
 
-object Main extends Application {
-  val myAtom = Atom(5)
-  myAtom.value = 5
-  println(myAtom.value)
-  myAtom.value = 1
-  println(myAtom.value)
-  myAtom.value = 3
-  println(myAtom.value)
+  def get(): T = ref.get()
+
+  def set(f: => T): T = {
+    var value = get()
+    do {
+      value = f
+    } while (!ref.compareAndSet(get(), value))
+    value
+  }
+
+  def set(f: T => T): T = set(f(get()))
 }
