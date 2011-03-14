@@ -14,18 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 package naedyrscala.tools
-import naedyrscala.tools.AsyncThread._
 
-class AsyncThreadTest {
-  def main(args: Array[String]): Unit = {
-    proof()
-    async_await()
-    await_async()
-    threeSums()
-    totalSums()
-    bank()
-  }
+import org.junit.Test
+import naedyrscala.tools.Async._
 
+class AsyncTest {
+
+  @Test
   def proof() = {
     println("define result")
     val result = async {
@@ -41,6 +36,7 @@ class AsyncThreadTest {
     println("available " + result.available)
   }
 
+  @Test
   def threeSums() = {
     val sum = async {
       (1 to 100000000).reduceLeft(_ + _)
@@ -57,6 +53,7 @@ class AsyncThreadTest {
     println(await(sum3))
   }
 
+  @Test
   def async_await() = {
     val sum = async {
       (1 to 100000000).reduceLeft(_ + _)
@@ -83,6 +80,7 @@ class AsyncThreadTest {
     println(result2)
   }
 
+  @Test
   def await_async() = {
     // await async will run something synchronously in another thread 
     val sum = await(async {
@@ -93,6 +91,7 @@ class AsyncThreadTest {
     println(sum)
   }
 
+  @Test
   def totalSums() = {
     val total = AtomOptimistic(0)
     val max = 1000
@@ -127,6 +126,7 @@ class AsyncThreadTest {
     println("total " + total.value + " should be " + (sum.await + sum2.await + sum3.await))
   }
 
+  @Test
   def bank() = {
     val balance = AtomOptimistic(100)
     def withdraw(amount: Int, balance: Int) = {
@@ -140,15 +140,11 @@ class AsyncThreadTest {
       balance + amount
     }
     def applyTransaction(account: Atomic[Int], transaction: Int => Int) = {
-      async {
-        account(acc => transaction(acc))
-        account()
-      }
+      account(acc => transaction(acc))
     }
 
-    def transact = applyTransaction(balance, _: Int => Int)
     val transactions = List(deposit(100, _: Int), withdraw(100, _: Int), withdraw(10, _: Int), withdraw(10, _: Int), withdraw(10, _: Int))
-    val results = transactions.map { transact(_) }
+    val results = transactions.map { x => async { applyTransaction(balance, x) } }
     println("balance " + balance.value)
     results.foreach(x => println(x.await))
     println("balance " + balance.value + " should equal " + (100 + 100 - 10 - 10 - 10 - 10))

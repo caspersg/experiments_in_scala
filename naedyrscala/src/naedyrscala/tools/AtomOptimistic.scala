@@ -29,11 +29,9 @@ case class AtomOptimistic[T](private val initialValue: T) extends Atomic[T] with
 
   def apply(f: => T): T = {
     var value = apply()
-    retriable {
+    Retriable.retriable {
       do {
         value = f
-        //println("collision")
-        Thread.sleep(1);
       } while (!ref.compareAndSet(ref.get(), value))
     }
     value

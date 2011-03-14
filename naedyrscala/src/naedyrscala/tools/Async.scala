@@ -18,11 +18,21 @@ package naedyrscala.tools
 import java.util.concurrent.Executors
 import java.util.concurrent.Callable
 
-trait Result[T] {
-  def await(): T
-  def available(): Boolean
+case class Result[T](private val future: java.util.concurrent.Future[T]) {
+  private lazy val value = future.get()
+  def await(): T = value
+  def available(): Boolean = future.isDone()
 }
 
-trait Async[T] {
-  def invoke[T](func: => T): Result[T]
+object Async {
+  val threadPool = Executors.newCachedThreadPool()
+  def apply[T](func: => T): Result[T] = {
+    Result(Async.threadPool.submit(new Callable[T]() {
+      def call(): T = {
+        func
+      }
+    }))
+  }
+  def async[T](func: => T): Result[T] = apply(func)
+  def await[T](result: Result[T]): T = result.await()
 }

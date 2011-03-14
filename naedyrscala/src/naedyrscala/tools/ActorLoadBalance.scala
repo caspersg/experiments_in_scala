@@ -15,23 +15,29 @@ limitations under the License.
 */
 package naedyrscala.tools
 
-case class AtomPessimistic[T](private var ref: T) extends Atomic[T] with AtomicValue[T] with AtomicAssign[T] with AtomicBean[T] {
-  def apply(): T = synchronized { ref }
+import scala.actors.Future
+import scala.actors.Actor
+import scala.actors.Actor._
 
-  def apply(f: => T): T = {
-    var value = apply()
-    Retriable.retriable {
-      synchronized {
-        ref = f
-        value = ref
+object ActorLoadBalance {
+
+  def apply(theActors: Seq[Actor]) = actor {
+    var actors = theActors
+    var latest = 0
+    loop {
+      react {
+        case x: Exit =>
+          actors foreach {
+            _ ! x
+          }
+          exit
+        case x =>
+          actors(latest) ! x
+          latest = nextActor(actors, latest)
       }
     }
-    value
   }
-}
-
-object AtomPessimisticTest extends Application {
-  val atom = AtomPessimistic(0)
-  AtomicTest.run(atom)
-  AtomicTest.runValue(atom)
+  def nextActor(actors: Seq[Actor], last: Int): Int = {
+    (last + 1) % actors.size
+  }
 }

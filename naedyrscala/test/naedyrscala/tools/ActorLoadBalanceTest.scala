@@ -18,36 +18,42 @@ package naedyrscala.tools
 import scala.actors.Actor
 import scala.actors.Actor._
 
-trait Transaction {
-  protected val count: Atomic[Int]
-  /**
-   * guarantees that commands will run atomically, 
-   * 
-   * @param func
-   */
-  def apply[R](func: => R) {
-    count { x =>
-      func
-      x + 1
+import org.junit._
+import Assert.assertEquals
+
+class ActorLoadBalanceTest {
+  def makeActor(id: Int): Actor = {
+    actor {
+      loop {
+        react {
+          case x: String =>
+            println("ran " + id + " " + x)
+          case Exit =>
+            println("exit " + id)
+            exit
+        }
+      }
     }
   }
-  def retry() {
-    count.retry()
+
+  @Test
+  def testTheTest = {
+    val actor = makeActor(100)
+    actor ! "hi"
+    Thread.sleep(2000)
+    actor ! Exit
   }
-}
 
-/**
- * if multiple threads attempt to enter the block (ie run the function) all except one will be forced to retry
- *
- */
-case class TransactionOptimistic() extends Transaction {
-  protected val count = AtomOptimistic(0)
-}
-
-/**
- * All threads will be blocked except one
- *
- */
-case class TransactionPessimistic() extends Transaction {
-  protected val count = AtomPessimistic(0)
+  @Test
+  def testTheRest = {
+    val actor = ActorLoadBalance((1 to 4) map {
+      makeActor(_)
+    })
+    (1 to 10) foreach {
+      actor ! _.toString
+    }
+    Thread.sleep(2000)
+    actor ! Exit
+    Thread.sleep(2000)
+  }
 }
