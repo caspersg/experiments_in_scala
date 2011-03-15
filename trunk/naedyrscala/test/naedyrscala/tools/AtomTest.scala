@@ -38,11 +38,11 @@ class AtomTest extends Application {
     myAtom.set { x =>
       x + 3
     }
-    assertEquals(6, {
+    assertEquals(9, {
       myAtom.get
     })
     myAtom.set(_ - 3)
-    assertEquals(3, {
+    assertEquals(6, {
       myAtom.get
     })
   }

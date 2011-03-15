@@ -25,11 +25,13 @@ case class Atom[T](private val value: T) {
   def get(): T = ref.get()
 
   def set(f: => T): T = {
-    var value = get()
-    do {
-      value = f
-    } while (!ref.compareAndSet(get(), value))
-    value
+    val previous = get()
+    val update = f
+    if (ref.compareAndSet(previous, update)) {
+      update
+    } else {
+      set(f)
+    }
   }
 
   def set(f: T => T): T = set(f(get()))
