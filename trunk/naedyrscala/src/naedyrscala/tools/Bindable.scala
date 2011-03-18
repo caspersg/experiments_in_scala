@@ -15,8 +15,8 @@ case class Bindable[T](private var value: T) extends Ref[T] {
 
   override def apply(): T = value
 
-  def apply(f: => T): T = {
-    val newestValue = f
+  def apply(f: T => T): T = {
+    val newestValue = f(apply())
     value = newestValue
     binds().foreach(x => x(newestValue))
     newestValue

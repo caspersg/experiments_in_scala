@@ -18,15 +18,14 @@ package naedyrscala.tools
 case class AtomPessimistic[T](private var ref: T) extends Atomic[T] with AtomicValue[T] with AtomicAssign[T] with AtomicBean[T] {
   def apply(): T = synchronized { ref }
 
-  def apply(f: => T): T = {
-    var value = apply()
+  def apply(f: T => T): T = {
     Retriable.retriable {
       synchronized {
-        ref = f
-        value = ref
+        val previous = apply()
+        ref = f(previous)
+        return ref
       }
     }
-    value
   }
 }
 
