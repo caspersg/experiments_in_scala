@@ -1,12 +1,12 @@
 /*
-Copyright 2010 naedyr@gmail.com
+ Copyright 2010 naedyr@gmail.com
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
-       
+http://www.apache.org/licenses/LICENSE-2.0
+
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -60,7 +60,7 @@ object Optional extends Application {
     }
   })
 
-  // from 
+  // from
   // http://speaking-my-language.blogspot.com/2010/08/why-scalas-option-wont-save-you-from.html
 
   case class Person(name: String, email: String)
@@ -93,10 +93,10 @@ object Optional extends Application {
 
   assertEquals("bob@builder.com", {
     occupations.get("builder").
-      flatMap { _ find (_.name == "bob") }.
-      map(_.email).
-      filter { _ endsWith "builder.com" }.
-      getOrElse("nobody@nowhere.com")
+    flatMap { _ find (_.name == "bob") }.
+    map(_.email).
+    filter { _ endsWith "builder.com" }.
+    getOrElse("nobody@nowhere.com")
   })
 
   assertEquals("bob@builder.com", {
@@ -121,4 +121,13 @@ object Optional extends Application {
     List(1, 2, 3) ++ Some(4) ++ None
   })
 
+
+  implicit def fromOptionToConvertedVal[T](o:Option[T]) = new {
+    def ?[R] (doWithSomeVal:(T) => R) = new {
+      def :(handleNone: => R) = o match {
+        case Some(value) => doWithSomeVal(value)
+        case None => handleNone
+      }
+    }
+  }
 }

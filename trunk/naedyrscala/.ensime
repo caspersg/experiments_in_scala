@@ -1,0 +1,15 @@
+;; This config was generated using ensime-config-gen. Feel free to customize its contents manually.
+
+(
+
+:project-name "naedyrscala"
+
+:project-package "naedyrscala"
+
+:sources ("./src/")
+
+:compile-jars ("./lib/" "d:/product/scala-2.8.1.final/")
+
+:target "./classes/"
+
+)
