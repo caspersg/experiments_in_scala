@@ -121,13 +121,4 @@ object Optional extends Application {
     List(1, 2, 3) ++ Some(4) ++ None
   })
 
-
-  implicit def fromOptionToConvertedVal[T](o:Option[T]) = new {
-    def ?[R] (doWithSomeVal:(T) => R) = new {
-      def :(handleNone: => R) = o match {
-        case Some(value) => doWithSomeVal(value)
-        case None => handleNone
-      }
-    }
-  }
 }
