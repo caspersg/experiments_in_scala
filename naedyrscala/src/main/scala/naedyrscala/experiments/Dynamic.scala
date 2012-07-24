@@ -26,7 +26,7 @@ case class Walker() {
   def walk(times: Int): String = (1 to times).map("run" + _).mkString
 }
 
-object RunTest extends Application {
+object RunTest extends App {
   type Run = { def run(times: Int): Int }
   type Walk = { def walk(times: Int): String }
 

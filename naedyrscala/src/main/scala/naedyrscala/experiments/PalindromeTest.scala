@@ -1,6 +1,6 @@
 package naedyrscala.experiments
 
-object PalindromeTest extends Application {
+object PalindromeTest extends App {
   def isPal[T](x: List[T]): Boolean = {
     if (x.length <= 1) true
     else if (x.head == x.last) isPal(x.tail.init)

@@ -42,7 +42,7 @@ object Act {
   }*/
 }
 
-object Test2 extends Application {
+object Test2 extends App {
 
   val echo1 = actor {
     loop {

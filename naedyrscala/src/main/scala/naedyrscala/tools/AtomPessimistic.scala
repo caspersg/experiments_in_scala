@@ -29,7 +29,7 @@ case class AtomPessimistic[T](private var ref: T) extends Atomic[T] with AtomicV
   }
 }
 
-object AtomPessimisticTest extends Application {
+object AtomPessimisticTest extends App {
   val atom = AtomPessimistic(0)
   AtomicTest.run(atom)
   AtomicTest.runValue(atom)

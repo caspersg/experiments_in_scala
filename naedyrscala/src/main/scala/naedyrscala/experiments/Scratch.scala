@@ -19,7 +19,7 @@ object Scratch {
   abstract class LoopTask {
     def loop(): Int
   }
-  case class GameObject
+  case class GameObject()
   abstract class Filter[T] {
       def accept(o:T):Boolean
   }

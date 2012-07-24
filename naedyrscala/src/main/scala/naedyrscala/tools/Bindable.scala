@@ -23,7 +23,7 @@ case class Bindable[T](private var value: T) extends Ref[T] {
   }
 }
 
-object BindableTest extends Application {
+object BindableTest extends App {
   {
     val source = Bindable(1)
     var target = 2
