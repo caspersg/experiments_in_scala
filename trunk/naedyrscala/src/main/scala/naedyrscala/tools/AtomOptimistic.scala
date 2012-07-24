@@ -40,7 +40,7 @@ case class AtomOptimistic[T](private val initialValue: T) extends Atomic[T] with
   }
 }
 
-object AtomOptimisticTest extends Application {
+object AtomOptimisticTest extends App {
   val atom = AtomOptimistic(0)
   AtomicTest.run(atom)
   AtomicTest.runValue(atom)

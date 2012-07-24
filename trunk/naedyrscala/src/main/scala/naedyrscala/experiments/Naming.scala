@@ -18,7 +18,7 @@ package naedyrscala.experiments
 import scala.collection.mutable.ArrayBuffer
 
 // from http://www.objectmentor.com/resources/articles/Naming.pdf
-object Naming extends Application {
+object Naming extends App {
 
   // list1 = []
   // for x in theList:

@@ -22,7 +22,7 @@ package naedyrscala.experiments
 //             foldingFunction (x:y:ys) "-" = (y - x):ys
 //             foldingFunction xs numberString = read numberString:xs
 
-object RpnCalc extends Application {
+object RpnCalc extends App {
 
   def solve(input: String) = {
     input.split("\\s+").toList.foldLeft[List[String]](Nil) {

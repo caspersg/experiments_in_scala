@@ -47,7 +47,7 @@ object MemBasic {
   def apply[A, B, R](func: (A, B) => R) = mem2(func)
 }
 
-object MemBasicTest extends Application {
+object MemBasicTest extends App {
   val mult = (x: Int, y: Int) => { println("mult"); x * y }
   val double = (x: Int) => { println("double"); mult(x, 2) }
   val hello = (x: String) => { println("hello"); "hello " + x }

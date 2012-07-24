@@ -25,7 +25,7 @@ object Thrush {
     fs.reduceLeft(_ andThen _)
   }
 
-  object ThrushTest extends Application {
+  object ThrushTest extends App {
     val doublef = (x: Int) => x * 2
     val incrementf = (x: Int) => x + 1
     val decrementf = (x: Int) => x - 1

@@ -47,10 +47,10 @@ object Converter extends SimpleSwingApplication {
 
     reactions += {
       case EditDone(`pounds`) =>
-        dollars.text = format("%1.2f", (pounds.text.toDouble * 1.55255))
+        dollars.text = "%1.2f".format(pounds.text.toDouble * 1.55255)
 
       case EditDone(`dollars`) =>
-        pounds.text = format("%1.2f", (dollars.text.toDouble / 1.55255))
+        pounds.text = "%1.2f".format(dollars.text.toDouble / 1.55255)
 
       case ButtonClicked(b) =>
         clickCount += 1

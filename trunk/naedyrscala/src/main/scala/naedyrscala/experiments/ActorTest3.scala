@@ -18,7 +18,7 @@ package naedyrscala.experiments
 import scala.actors.Actor
 import scala.actors.Actor._
 
-object Test3 extends Application {
+object Test3 extends App {
   case class Accumulate(amount: Int)
   case class Reset()
   case class Total()

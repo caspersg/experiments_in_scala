@@ -16,7 +16,7 @@ limitations under the License.
 package naedyrscala.experiments
 
 // from http://downgra.de/2010/08/05/scala_gotcha_blocks_and_functions/
-object EdgeCase extends Application {
+object EdgeCase extends App {
 
   var x = 1
 

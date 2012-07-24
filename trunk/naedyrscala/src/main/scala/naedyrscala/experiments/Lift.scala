@@ -32,7 +32,7 @@ object Lift {
   }
 }
 
-object TestLift extends Application {
+object TestLift extends App {
   val a = Some(2)
   val b = Some(3)
   val mult = (x: Int, y: Int) => x * y

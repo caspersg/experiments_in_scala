@@ -18,7 +18,7 @@ package naedyrscala.experiments
 import org.junit._
 import Assert.assertEquals
 
-object Optional extends Application {
+object Optional extends App {
   val a: Option[String] = Some("a")
   val b: Option[String] = None
 

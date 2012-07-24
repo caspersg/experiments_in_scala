@@ -18,7 +18,7 @@ package naedyrscala.tools
 import org.junit._
 import Assert.assertEquals
 
-class AtomTest extends Application {
+class AtomTest extends App {
   @Test
   def test1() {
     val myAtom = Atom(5)

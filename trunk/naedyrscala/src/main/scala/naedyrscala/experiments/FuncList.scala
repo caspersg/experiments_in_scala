@@ -23,7 +23,7 @@ package naedyrscala.experiments
 //   (define (car x) (x 1))
 //   (define (cdr x) (x 2))
 
-object FuncList extends Application {
+object FuncList extends App {
   type consT[H, T] = (Boolean) => Any
   def cons[H, T](head: H, tail: T): consT[H, T] = { (selectHead: Boolean) =>
     if (selectHead) {
@@ -45,7 +45,7 @@ object FuncList extends Application {
 // (define (car x) (x (lambda (a b) a)))
 // (define (cdr x) (x (lambda (a b) b)))
 
-object FuncList2 extends Application {
+object FuncList2 extends App {
   type consT[H, T] = ((H, T) => Any) => Any
   def cons[H, T](head: H, tail: T): consT[H, T] = { x => x(head, tail) }
   def head[H, T](x: consT[H, T]): H = x((a: H, b: T) => a).asInstanceOf[H]
@@ -57,7 +57,7 @@ object FuncList2 extends Application {
   assert(tail(tail(a)) == 3)
 }
 
-object FuncList3 extends Application {
+object FuncList3 extends App {
   type consT[H, T] = ((H, T) => Any) => Any
   def cons[H, T](head: H, tail: T): consT[H, T] = _(head, tail)
   def head[H, T](x: consT[H, T]) = x((a, _) => a).asInstanceOf[H]
