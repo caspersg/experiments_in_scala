@@ -1,3 +1,5 @@
+package naedyrscala;
+
 import static org.junit.Assert.assertEquals;
 
 import java.util.concurrent.atomic.AtomicReference;

@@ -15,7 +15,6 @@ limitations under the License.
 */
 package naedyrscala.tools
 
-import org.junit.Test
 import java.util.concurrent.atomic.AtomicReference
 
 case class Atom[T](private val value: T) {
